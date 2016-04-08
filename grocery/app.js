@@ -1,3 +1,8 @@
+/*
+Radhika Mattoo, rm3485@nyu.edu
+Applied Internet Tech Spring 2016
+Homework 6
+*/
 var express = require('express');
 var path = require('path');
 var favicon = require('serve-favicon');
@@ -5,6 +10,8 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 
+
+require('./db');
 var routes = require('./routes/index');
 var users = require('./routes/users');
 

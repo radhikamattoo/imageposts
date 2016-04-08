@@ -1,2 +1,15 @@
-<h1>{{title}}</h1>
-<p>Welcome to {{title}}</p>
+<form method = "POST" action= "">
+  Image Post Title: <input type='text' name='title'> <br> <br>
+  Image 1 URL <input type='text' name='image1URL'>  Caption: <input type='text' name='image1Cap'> <br>
+  Image 2 URL <input type='text' name='image2URL'>  Caption: <input type='text' name='image2Cap'> <br>
+  Image 3 URL <input type='text' name='image3URL'>  Caption: <input type='text' name='image3Cap'> <br>
+  <input type='submit' value='Add New Image Post!'>
+</form>
+
+{{#each postList}}
+  <h2> {{title}} </h2>  <!-- make a link later on -->
+    {{#each images }}
+    <p> {{caption}} </p> <br>
+    <img src={{url}}>
+    {{/each}}
+{{/each}}
