@@ -90,7 +90,7 @@ router.post('/image-posts/add', function(req, res, next){
 router.post('/image-posts/delete', function(req, res, next){
   var toRemove = req.body.selections; //checkboxes
   var slug = req.body.slug; //for finding image post
-
+  var empty = false;
   //get this imagepost object
   ImagePost.findOne({slug:slug}, function(err, post, count){
     //remove image(s)
@@ -102,15 +102,28 @@ router.post('/image-posts/delete', function(req, res, next){
       post.images.id(toRemove).remove();
     }
 
-    //resave imagePost object
-    post.save(function (err) {
-      if (err) console.log(err);
-      else console.log('sub-doc(s) removed');
-    });
-  });
+    //resave imagePost object IF it still has images
+    if(post.images.length === 0){ //EMPTY
+      empty = true;
+      ImagePost.findByIdAndRemove(post._id, function(err, post){
+        if (err) console.log(err);
+      });
 
-  //redirect to single post page
-  res.redirect('/image-posts/' + slug);
+    }else{ //STILL HAS IMAGES
+      post.save(function (err) {
+          if (err) console.log(err);
+          else console.log('sub-doc(s) removed');
+      });
+    }
+
+    //choose proper redirect
+    if(empty){
+      res.redirect('/image-posts');
+    }
+    else{
+      res.redirect('/image-posts/' + slug);
+    }
+  });
 });
 
 
