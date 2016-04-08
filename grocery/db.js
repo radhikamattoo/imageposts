@@ -8,7 +8,7 @@ Homework 6
 
 //insert schemas
 var Image = new mongoose.Schema({
-  caption: {type: String, required: true},
+  caption: {type: String},
   url: {type: String, required:true}
 });
 
@@ -17,13 +17,13 @@ var ImagePost = new mongoose.Schema({
   images: [Image]
 });
 
+//slug for imagepost schema
+ImagePost.plugin(URLSlugs('title'));
 
 //register schema as model
 mongoose.model('Image', Image);
 mongoose.model('ImagePost', ImagePost);
 
-//slug for imagepost schema
-ImagePost.plugin(URLSlugs('title'));
 
 //connect to db
 mongoose.connect('mongodb://localhost/hw06');

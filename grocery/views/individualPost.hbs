@@ -1,0 +1,22 @@
+<div>
+  <h2> {{list.title}}</h2>
+  <form method="POST" action="delete">
+    {{#each list.images}}
+      <input type="checkbox" value={{_id}} name="selections"> {{caption}} </input> <br>
+      <img src={{url}}><br><br><br>
+    {{/each}} <br> <br>
+    <input type="hidden" name="slug" value={{list.slug}}>
+    <input type="submit">
+  </form>
+</div>
+
+<br>
+<hr>
+<br>
+
+
+<form method = "POST" action= "add">
+  URL <input type='text' name='URL'>  Caption: <input type='text' name='caption'> <br><br>
+  <input type="hidden" name="slug" value={{list.slug}}>
+  <input type='submit' value='Add another Image!'>
+</form>

@@ -7,16 +7,16 @@ var Image = mongoose.model('Image');
 
 
 
-/* GET home page. */
+//HOME PAGE
 router.get('/image-posts', function(req, res, next) {
   //look in mongodb for list
   ImagePost.find(function(err, imagePosts, count) {
-	  //  console.log(err, imagePosts, count);
+	   console.log(imagePosts);
      res.render('index', {list:imagePosts});
   });
 });
 
-
+//SUBMIT IMAGE-POST
 router.post('/image-posts', function(req, res, next){
   //title of imagepost
   var title = req.body.title;
@@ -42,11 +42,9 @@ router.post('/image-posts', function(req, res, next){
     title: title,
     images: images
   });
-  console.log(typeof(imagePost.save)); //should be function
   imagePost.save(function(err, imagePost, count){
-    console.log("Inside save callback");
     if(err){
-      console.log(err);
+      res.send(err);
     }
     else{
       res.redirect(302, '/image-posts');
@@ -54,5 +52,66 @@ router.post('/image-posts', function(req, res, next){
   });
 
 });
+
+
+//GET INDIVIDUAL IMAGE POST
+router.get('/image-posts/:slug', function(req, res, next){
+    var slug = req.params.slug;
+    ImagePost.findOne({slug:slug}, function(err, imagePost, count){
+      res.render('individualPost', {list:imagePost});
+    });
+});
+
+
+//ADD AN IMAGE
+router.post('/image-posts/add', function(req, res, next){
+  //parse body
+  var url = req.body.URL;
+  var caption = req.body.caption;
+  var slug = req.body.slug; //for finding image post
+
+  var newImage = new Image({
+    caption: caption,
+    url: url
+  });
+
+  //update image post on db
+  ImagePost.findOneAndUpdate({slug: slug}, {$push: {images: newImage}}, function(err, imagePost, count){
+    if(err){
+      res.send(err);
+    }else{
+      res.redirect('/image-posts/' + slug);
+    }
+  });
+
+});
+
+//DELETE AN IMAGE
+router.post('/image-posts/delete', function(req, res, next){
+  var toRemove = req.body.selections; //checkboxes
+  var slug = req.body.slug; //for finding image post
+
+  //get this imagepost object
+  ImagePost.findOne({slug:slug}, function(err, post, count){
+    //remove image(s)
+    if(Array.isArray(toRemove)){
+      toRemove.forEach(function(imageID){
+        post.images.id(imageID).remove();
+      });
+    }else{
+      post.images.id(toRemove).remove();
+    }
+
+    //resave imagePost object
+    post.save(function (err) {
+      if (err) console.log(err);
+      else console.log('sub-doc(s) removed');
+    });
+  });
+
+  //redirect to single post page
+  res.redirect('/image-posts/' + slug);
+});
+
 
 module.exports = router;
