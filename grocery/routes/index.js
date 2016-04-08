@@ -44,7 +44,7 @@ router.post('/image-posts', function(req, res, next){
   });
   imagePost.save(function(err, imagePost, count){
     if(err){
-      res.send(err);
+      res.send("ERROR! Please fill out form again");
     }
     else{
       res.redirect(302, '/image-posts');
